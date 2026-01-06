@@ -1,27 +1,23 @@
-const checkBoxes = document.querySelectorAll("input[type='checkbox']");
+const checkBoxes = Array.from(document.querySelectorAll("input[type='checkbox']"));
 
-let lastChecked = null;
+let lastCheckedIndex = null;
 
 function handleClick(e) {
-  if (!e.shiftKey || !lastChecked) {
-    lastChecked = this;
+  const currentIndex = checkBoxes.indexOf(this);
+
+  if (!e.shiftKey || lastCheckedIndex === null) {
+    lastCheckedIndex = currentIndex;
     return;
   }
 
-  let inBetween = false;
+  const start = Math.min(lastCheckedIndex, currentIndex);
+  const end = Math.max(lastCheckedIndex, currentIndex);
 
-  checkBoxes.forEach((checkBox) => {
-    if (checkBox === this || checkBox === lastChecked) {
-      inBetween = !inBetween;
-    }
+  for (let i = start; i <= end; i++) {
+    checkBoxes[i].checked = this.checked;
+  }
 
-    if (inBetween) {
-      checkBox.checked = this.checked;
-      lastChecked.checked = this.checked;
-    }
-  });
-
-  lastChecked = this;
+  lastCheckedIndex = currentIndex;
 }
 
 checkBoxes.forEach((checkBox) => {
